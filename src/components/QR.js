@@ -26,7 +26,10 @@ const QR = () => {
   return (
     <div className="container">
       <h1>Your QR Code</h1>
-      <p>Full Name: {fullName}</p>
+      <div className="name-display">
+        <p><strong>Full Name:</strong></p>
+        <p className="user-name">{fullName}</p>
+      </div>
       <div className="qr-container">
         <canvas ref={canvasRef}></canvas>
       </div>

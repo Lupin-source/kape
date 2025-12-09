@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { db, serverTimestamp } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import Modal from './Modal';
+import Toast from './Toast';
+import useToast from '../hooks/useToast';
 
 const Registration = () => {
   const [form, setForm] = useState({ fullName: '', contactNumber: '', instagram: '', confirm: false });
-  const [error, setError] = useState('');
+  const { toast, showSuccess, showError, showWarning, hideToast } = useToast();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,20 +18,19 @@ const Registration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
 
     if (!form.fullName || !form.contactNumber || !form.instagram || !form.confirm) {
-      setError('All fields are required.');
+      showWarning('All fields are required.');
       return;
     }
 
     if (!/^09\d{9}$/.test(form.contactNumber)) {
-      setError('Contact number must be in format 09xxxxxxxxx.');
+      showWarning('Contact number must be in format 09xxxxxxxxx.');
       return;
     }
 
     if (form.instagram.includes(' ')) {
-      setError('Instagram username must not contain spaces.');
+      showWarning('Instagram username must not contain spaces.');
       return;
     }
 
@@ -47,15 +49,17 @@ const Registration = () => {
         docId: docRef.id
       }));
 
-      navigate('/verify');
+      showSuccess('Registration successful! Redirecting...');
+      setTimeout(() => navigate('/verify'), 1000);
     } catch (err) {
-      setError('Error submitting registration. Please try again.');
+      console.error('Registration error:', err);
+      showError('Error submitting registration. Please try again.');
     }
   };
 
   return (
     <div className="container">
-      <h1>Join the Raffle</h1>
+      <h1>Kultura Konekta 2</h1>
       <form onSubmit={handleSubmit}>
         <input type="text" name="fullName" placeholder="Full Name" value={form.fullName} onChange={handleChange} required />
         <input type="tel" name="contactNumber" placeholder="Contact Number (09xxxxxxxxx)" value={form.contactNumber} onChange={handleChange} required />
@@ -65,8 +69,16 @@ const Registration = () => {
           <label>I confirm I want to join the raffle.</label>
         </div>
         <button type="submit">Submit Registration</button>
-        {error && <div className="error">{error}</div>}
       </form>
+      
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={hideToast}
+        />
+      )}
     </div>
   );
 };

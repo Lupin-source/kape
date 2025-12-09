@@ -14,7 +14,7 @@ const Verify = () => {
 
   const handleContinue = () => {
     if (followed) {
-      navigate('/qr');
+      navigate('/thank-you');
     }
   };
 
@@ -23,8 +23,8 @@ const Verify = () => {
       <h1>Follow Our Instagram</h1>
       <p>Follow our Instagram pages to continue your raffle entry:</p>
       <div className="follow-links">
-        <a href="https://instagram.com/coffeeShopMain" target="_blank">@coffeeShopMain</a>
-        <a href="https://instagram.com/coffeeShopBranch" target="_blank">@coffeeShopBranch</a>
+        <a href="https://www.instagram.com/4025kind/" target="_blank">@4025kind</a>
+        <a href="https://www.instagram.com/kultura_konekta/" target="_blank">@kultura_konekta</a>
       </div>
       <div className="checkbox-container">
         <input type="checkbox" checked={followed} onChange={(e) => setFollowed(e.target.checked)} />

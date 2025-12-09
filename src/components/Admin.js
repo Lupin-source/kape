@@ -2,10 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import Modal from './Modal';
+import Toast from './Toast';
 
 const Admin = () => {
   const [entries, setEntries] = useState([]);
   const [winner, setWinner] = useState(null);
+  const [modal, setModal] = useState({
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: '',
+    confirmText: '',
+    onConfirm: null
+  });
+  const [toast, setToast] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,27 +35,48 @@ const Admin = () => {
   }, [navigate]);
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this entry?')) {
-      try {
-        await deleteDoc(doc(db, 'raffle_entries', id));
-        setEntries(entries.filter(entry => entry.id !== id));
-        if (winner && winner.id === id) {
-          setWinner(null); // Reset winner if deleted
+    setModal({
+      isOpen: true,
+      type: 'danger',
+      title: 'Delete Entry',
+      message: 'Are you sure you want to delete this entry? This action cannot be undone.',
+      confirmText: 'Delete',
+      onConfirm: async () => {
+        try {
+          await deleteDoc(doc(db, 'raffle_entries', id));
+          setEntries(entries.filter(entry => entry.id !== id));
+          if (winner && winner.id === id) {
+            setWinner(null); // Reset winner if deleted
+          }
+        } catch (error) {
+          console.error('Error deleting entry:', error);
+          setToast({
+            message: 'Error deleting entry. Please try again.',
+            type: 'error'
+          });
         }
-      } catch (error) {
-        console.error('Error deleting entry:', error);
-        alert('Error deleting entry');
       }
-    }
+    });
   };
 
   const drawWinner = () => {
     if (entries.length === 0) {
-      alert('No entries available');
+      setModal({
+        isOpen: true,
+        type: 'warning',
+        title: 'No Entries',
+        message: 'No entries available to draw from.',
+        confirmText: 'OK'
+      });
       return;
     }
     const randomIndex = Math.floor(Math.random() * entries.length);
-    setWinner(entries[randomIndex]);
+    const drawnWinner = entries[randomIndex];
+    setWinner(drawnWinner);
+    setToast({
+      message: `Winner drawn: ${drawnWinner.fullName}!`,
+      type: 'success'
+    });
   };
 
   return (
@@ -100,6 +132,24 @@ const Admin = () => {
           </div>
         ))}
       </div>
+      
+      <Modal
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        onConfirm={modal.onConfirm}
+        title={modal.title}
+        message={modal.message}
+        confirmText={modal.confirmText}
+        type={modal.type}
+      />
+      
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 };

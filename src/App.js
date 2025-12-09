@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Registration from './components/Registration';
 import Verify from './components/Verify';
+import ThankYou from './components/ThankYou';
 import QR from './components/QR';
 import Admin from './components/Admin';
 import AdminLogin from './components/AdminLogin';
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Registration />} />
           <Route path="/verify" element={<Verify />} />
+          <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/qr" element={<QR />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
