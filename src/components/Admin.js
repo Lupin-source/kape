@@ -82,6 +82,19 @@ const Admin = () => {
   return (
     <div className="admin-container">
       <h1>Admin - Raffle Entries</h1>
+      
+      {/* Participant Count Section */}
+      <div className="stats-section">
+        <div className="stat-card">
+          <h3>Total Participants</h3>
+          <p className="stat-number">{entries.length}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Draw Status</h3>
+          <p className="stat-number">{winner ? 'Winner Drawn' : 'No Winner Yet'}</p>
+        </div>
+      </div>
+      
       <button onClick={drawWinner} className="draw-btn">Draw Winner</button>
       {winner && (
         <div className="winner-section">
