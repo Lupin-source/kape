@@ -66,7 +66,7 @@ const Registration = () => {
         <input type="text" name="instagram" placeholder="Instagram Username" value={form.instagram} onChange={handleChange} required />
         <div className="checkbox-container">
           <input type="checkbox" name="confirm" checked={form.confirm} onChange={handleChange} required />
-          <label>I confirm I want to join the raffle.</label>
+          <label>I confirm my registration.</label>
         </div>
         <button type="submit">Submit Registration</button>
       </form>
